@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+    <style>
+        :root { --bg: #020617; --sidebar: #0f172a; --text: #f8fafc; --accent: #22d3ee; }
+        body { margin: 0; font-family: sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        aside { width: 260px; background: var(--sidebar); border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
+        .logo { font-size: 1.5rem; font-weight: 900; margin-bottom: 40px; display: block; color: white; text-decoration: none; }
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #94a3b8; text-decoration: none; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; }
+        .nav-item:hover, .nav-item.active { background: rgba(34, 211, 238, 0.1); color: var(--accent); }
+        
+        main { flex: 1; padding: 40px; overflow-y: auto; }
+        .search-bar { display: flex; gap: 10px; margin-bottom: 30px; }
+        input, select { padding: 15px; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 10px; outline: none; }
+        input { flex: 1; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .card { background: rgba(30,41,59,0.5); border: 1px solid #334155; border-radius: 16px; padding: 10px; position: relative; transition: 0.2s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .thumb { height: 180px; background: #0f172a; border-radius: 10px; margin-bottom: 10px; overflow: hidden; position: relative; }
+        .thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .btn-dl { width: 100%; padding: 10px; background: var(--text); color: black; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <aside>
+        <a href="dashboard.html" class="logo">METAFORGE</a>
+        <a href="dashboard.html" class="nav-item">📊 Dashboard</a>
+        <a href="library.html" class="nav-item active">📦 Library</a>
+        <a href="generator.html" class="nav-item">⚡ Generator</a>
+        <a href="community.html" class="nav-item">🌐 Community</a>
+    </aside>
+    
+    <main>
+        <h1>Asset Library</h1>
+        <div class="search-bar">
+            <input type="text" placeholder="Search 100,000+ assets...">
+            <select><option>All Categories</option><option>Roblox</option></select>
+        </div>
+        <div class="grid" id="grid">Loading...</div>
+    </main>
+
+    <script>
+        const API_BASE_URL = 'https://postumbilical-amiee-mystifiedly.ngrok-free.dev/api/v1';
+        async function load() {
+            const token = localStorage.getItem('access_token');
+            try {
+                const res = await fetch(`${API_BASE_URL}/assets/library`, { headers: {'Authorization': `Bearer ${token}`} });
+                const data = await res.json();
+                const grid = document.getElementById('grid');
+                
+                if(data.length === 0) grid.innerHTML = 'No assets found.';
+                else {
+                    grid.innerHTML = data.map(item => `
+                        <div class="card">
+                            <div class="thumb"><img src="${item.input_image_url || ''}"></div>
+                            <div style="font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.title}</div>
+                            <div style="font-size:0.8rem; color:#94a3b8;">${item.status}</div>
+                            ${item.status === 'completed' ? `<button class="btn-dl" onclick="dl(${item.id})">Download</button>` : ''}
+                        </div>
+                    `).join('');
+                }
+            } catch(e) {}
+        }
+        async function dl(id) {
+            const token = localStorage.getItem('access_token');
+            const res = await fetch(`${API_BASE_URL}/assets/download/${id}`, { headers: {'Authorization': `Bearer ${token}`} });
+            if(res.ok) { const d = await res.json(); window.open(d.url); }
+            else alert("Access Denied (Buy or Wait)");
+        }
+        load();
+    </script>
+</body>
+</html>

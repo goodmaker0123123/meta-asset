@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Community | Meta-Asset Forge</title>
+    <style>
+        :root { --bg: #020617; --sidebar: #0f172a; --text: #f8fafc; --accent: #22d3ee; }
+        body { margin: 0; font-family: sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar */
+        aside { width: 260px; background: var(--sidebar); border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
+        .logo { font-size: 1.5rem; font-weight: 900; margin-bottom: 40px; display: block; color: white; text-decoration: none; }
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #94a3b8; text-decoration: none; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; }
+        .nav-item:hover, .nav-item.active { background: rgba(34, 211, 238, 0.1); color: var(--accent); }
+        
+        /* Main */
+        main { flex: 1; padding: 40px; overflow-y: auto; }
+        h1 { font-size: 3rem; margin: 0 0 10px 0; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+        .card { background: rgba(30, 41, 59, 0.5); border: 1px solid #334155; border-radius: 16px; overflow: hidden; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .thumb { height: 200px; background: #1e293b; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #475569; font-size: 1.5rem; }
+        .info { padding: 20px; }
+        .title { font-weight: bold; font-size: 1.2rem; color: white; margin-bottom: 5px; }
+        .author { font-size: 0.9rem; color: var(--accent); margin-bottom: 15px; }
+        .desc { font-size: 0.9rem; color: #94a3b8; line-height: 1.5; }
+        .tags { margin-top: 15px; display: flex; gap: 10px; }
+        .tag { background: #0f172a; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; color: #cbd5e1; }
+    </style>
+</head>
+<body>
+    <aside>
+        <a href="dashboard.html" class="logo">METAFORGE</a>
+        <a href="dashboard.html" class="nav-item">📊 Dashboard</a>
+        <a href="library.html" class="nav-item">📦 Library</a>
+        <a href="generator.html" class="nav-item">⚡ Generator</a>
+        <a href="community.html" class="nav-item active">🌐 Community</a>
+        <div style="margin-top: auto;">
+            <a href="account.html" class="nav-item">⚙️ Settings</a>
+        </div>
+    </aside>
+    
+    <main>
+        <h1>Showcase</h1>
+        <p>Discover what creators are building with Meta-Asset Forge.</p>
+        
+        <div class="grid">
+            <!-- Item 1 -->
+            <div class="card">
+                <div class="thumb" style="background: linear-gradient(45deg, #1e293b, #0f172a);">CYBER CITY</div>
+                <div class="info">
+                    <div class="title">Neo-Tokyo District 9</div>
+                    <div class="author">by DevKai_99</div>
+                    <div class="desc">Generated over 500 buildings using the Sci-Fi preset. Optimized for mobile Roblox performance.</div>
+                    <div class="tags">
+                        <span class="tag">Roblox</span>
+                        <span class="tag">Sci-Fi</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Item 2 -->
+            <div class="card">
+                <div class="thumb" style="background: linear-gradient(45deg, #064e3b, #022c22);">FANTASY RPG</div>
+                <div class="info">
+                    <div class="title">Mystic Woods Pack</div>
+                    <div class="author">by ForestWalker</div>
+                    <div class="desc">A collection of 50 low-poly trees and rocks generated for a Unity RPG project.</div>
+                    <div class="tags">
+                        <span class="tag">Unity</span>
+                        <span class="tag">Nature</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Item 3 -->
+            <div class="card">
+                <div class="thumb" style="background: linear-gradient(45deg, #7f1d1d, #450a0a);">MARS BASE</div>
+                <div class="info">
+                    <div class="title">Red Planet Outpost</div>
+                    <div class="author">by SpaceX_Fan</div>
+                    <div class="desc">Hard-surface modeling using the generator. Textures added in Blender for extra detail.</div>
+                    <div class="tags">
+                        <span class="tag">Unreal</span>
+                        <span class="tag">Space</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

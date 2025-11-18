@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; background: #020617; color: #f8fafc; display: flex; height: 100vh; }
+        aside { width: 260px; background: #0f172a; border-right: 1px solid #1e293b; padding: 20px; }
+        .nav-item { display: block; padding: 12px 15px; color: #94a3b8; text-decoration: none; margin-bottom: 5px; }
+        .nav-item.active { color: #22d3ee; }
+        
+        main { flex: 1; padding: 50px; }
+        .card { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 600px; }
+        .btn { padding: 10px 20px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <aside>
+        <div style="font-size: 1.5rem; font-weight: 900; margin-bottom: 40px;">METAFORGE</div>
+        <a href="dashboard.html" class="nav-item">📊 Dashboard</a>
+        <a href="account.html" class="nav-item active">⚙️ Settings</a>
+    </aside>
+    <main>
+        <h1>Account Settings</h1>
+        <div class="card">
+            <h3>Profile</h3>
+            <p style="color: #94a3b8; margin-bottom: 5px;">Email Address</p>
+            <div id="email" style="font-size: 1.2rem; font-family: monospace;">Loading...</div>
+            <button class="btn" onclick="localStorage.clear(); location.href='index.html'">Sign Out</button>
+        </div>
+    </main>
+    <script>
+    const API_BASE_URL = 'https://postumbilical-amiee-mystifiedly.ngrok-free.dev/api/v1';
+
+    async function loadAccount() {
+        const token = localStorage.getItem('access_token');
+        if (!token) window.location.href = 'login.html';
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/auth/me`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const user = await res.json();
+
+            document.getElementById('user-email').innerText = user.email;
+            // 플랜 정보 표시 (필요시 HTML에 요소 추가해서 표시 가능)
+        } catch(e) {
+            console.error(e);
+        }
+    }
+    
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+    
+    loadAccount();
+</script>
+</body>
+</html>
