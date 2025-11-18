@@ -3,36 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         body { background-color: #020617; color: #f8fafc; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        .glow { position: absolute; bottom: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(#3b82f6, transparent 70%); opacity: 0.2; border-radius: 50%; z-index: -1; }
-        .login-box { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); padding: 50px; border-radius: 24px; width: 100%; max-width: 400px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); text-align: center; }
-        h2 { font-size: 2rem; margin: 0 0 10px; }
-        input { width: 100%; box-sizing: border-box; padding: 15px; margin-bottom: 15px; background: rgba(2, 6, 23, 0.5); border: 1px solid #334155; border-radius: 12px; color: white; font-size: 1rem; outline: none; transition: 0.3s; }
-        input:focus { border-color: #22d3ee; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 12px; background: linear-gradient(135deg, #22d3ee, #3b82f6); color: white; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; }
-        button:hover { transform: scale(1.02); }
-        .link { color: #22d3ee; text-decoration: none; font-size: 0.9rem; display: block; margin-top: 20px; }
+        .login-box { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); padding: 40px; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; }
+        input { width: 100%; box-sizing: border-box; padding: 15px; margin-bottom: 15px; background: rgba(2, 6, 23, 0.5); border: 1px solid #334155; border-radius: 12px; color: white; outline: none; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 12px; background: linear-gradient(135deg, #22d3ee, #3b82f6); color: white; font-weight: bold; cursor: pointer; }
+        .alert-box { background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e; color: #4ade80; padding: 15px; border-radius: 10px; display: none; margin-bottom: 20px; text-align: left; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-    <div class="glow"></div>
     <div class="login-box">
-        <h2>Initialize ID</h2>
-        <p style="color:#94a3b8; margin-bottom:30px;">Join the Forge</p>
+        <h2 style="margin-top:0;">Join MetaForge</h2>
+        
+        <div id="verification-alert" class="alert-box">
+            <strong>✅ Account Created!</strong><br>
+            We have sent a verification link to your email.<br>
+            Please check your inbox to activate your account.
+        </div>
+
         <form id="signup-form">
             <input type="email" id="email" placeholder="Email" required>
             <input type="password" id="password" placeholder="Password" required>
             <input type="password" id="confirm" placeholder="Confirm Password" required>
-            <button type="submit" id="submit-btn">Create Account</button>
+            <button type="submit" id="submit-btn">Sign Up</button>
         </form>
-        <a href="login.html" class="link">Already have an ID? Login</a>
+
+        <div style="margin: 20px 0; color: #64748b;">- OR -</div>
+        
+        <div id="g_id_onload" data-client_id="YOUR_GOOGLE_CLIENT_ID" data-callback="handleGoogle"></div>
+        <div class="g_id_signin" data-type="standard" data-theme="filled_black" data-width="320"></div>
+
+        <p style="margin-top: 20px; font-size: 0.9rem;">
+            Already have an account? <a href="login.html" style="color:#22d3ee;">Login</a>
+        </p>
     </div>
+
     <script>
         const API_BASE_URL = 'https://postumbilical-amiee-mystifiedly.ngrok-free.dev/api/v1';
+
+        // 이메일 가입
         document.getElementById('signup-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if(document.getElementById('password').value !== document.getElementById('confirm').value) return alert("Passwords mismatch");
+            const btn = document.getElementById('submit-btn');
+            const alertBox = document.getElementById('verification-alert');
+            
+            if(document.getElementById('password').value !== document.getElementById('confirm').value) return alert("Passwords do not match");
+
+            btn.innerText = "Processing...";
             try {
                 const res = await fetch(`${API_BASE_URL}/auth/register`, {
                     method: 'POST',
@@ -42,10 +60,33 @@
                         password: document.getElementById('password').value
                     })
                 });
-                if(res.ok) { alert("Success! Login now."); window.location.href='login.html'; }
-                else alert("Failed");
-            } catch(e) { alert("Error"); }
+                
+                if(res.ok) {
+                    document.getElementById('signup-form').style.display = 'none';
+                    alertBox.style.display = 'block'; // 인증 안내 메시지 표시
+                } else {
+                    const d = await res.json();
+                    alert(d.detail);
+                    btn.innerText = "Sign Up";
+                }
+            } catch(e) { alert("Error"); btn.innerText = "Sign Up"; }
         });
+
+        // 구글 가입
+        async function handleGoogle(res) {
+            try {
+                const r = await fetch(`${API_BASE_URL}/auth/google`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ google_token: res.credential })
+                });
+                if(r.ok) {
+                    const d = await r.json();
+                    localStorage.setItem('access_token', d.access_token);
+                    window.location.href = 'dashboard.html';
+                } else alert("Google Sign-In Failed");
+            } catch(e) { alert("Error"); }
+        }
     </script>
 </body>
 </html>
